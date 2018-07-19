@@ -1,0 +1,4 @@
+python train_imgreid_xent.py -d videotag -a resnet50 --root /Users/edwin/Documents/AI/datasets/person_re_id/ --save-dir /Users/edwin/Documents/AI/models/hacnn --max-epoch 300
+
+
+python train_imgreid_xent.py -d market1501 -a resnet50 --evaluate --resume saved-models/resnet50_xent_market1501.pth.tar --save-dir log/resnet50-xent-market1501 --test-batch 100 --gpu-devices 0
