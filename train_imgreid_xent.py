@@ -27,6 +27,7 @@ from utils.torchtools import set_bn_to_eval, count_num_param
 from eval_metrics import evaluate
 from optimizers import init_optim
 
+from google.colab import files
 
 parser = argparse.ArgumentParser(description='Train image model with cross entropy loss')
 # Datasets
@@ -254,6 +255,12 @@ def main():
     elapsed = round(time.time() - start_time)
     elapsed = str(datetime.timedelta(seconds=elapsed))
     train_time = str(datetime.timedelta(seconds=train_time))
+
+    for filename in os.listdir(args.save_dir):
+        path = os.path.join(args.save_dir, filename)
+        print('download - ', path)
+        files.download(path)
+
     print("Finished. Total elapsed time (h:m:s): {}. Training time (h:m:s): {}.".format(elapsed, train_time))
 
 

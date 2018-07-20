@@ -1,4 +1,19 @@
-python train_imgreid_xent.py -d videotag -a resnet50 --root /Users/edwin/Documents/AI/datasets/person_re_id/ --save-dir /Users/edwin/Documents/AI/models/hacnn --max-epoch 300
+python train_imgreid_xent.py -d videotag -a hacnn --root /Users/edwin/Documents/AI/datasets/person_re_id/ --save-dir /Users/edwin/Documents/AI/models/hacnn --max-epoch 300
+
+python train_imgreid_xent.py -d market1501 -a resnext101 --root /Users/luke/Documents/ml_datasets/person_re_id/ --save-dir /Users/luke/Documents/ml_models/hacnn --max-epoch 1
+python train_imgreid_xent.py \
+    -d dukemtmcreid \
+    -a hacnn \
+    --evaluate \
+    --root /Users/luke/Documents/ml_datasets/person_re_id/ \
+    --save-dir /Users/luke/Documents/ml_models/hacnn --max-epoch 1
 
 
 python train_imgreid_xent.py -d market1501 -a resnet50 --evaluate --resume saved-models/resnet50_xent_market1501.pth.tar --save-dir log/resnet50-xent-market1501 --test-batch 100 --gpu-devices 0
+
+
+
+
+
+
+python deep-person-reid/train_imgreid_xent.py -d market1501 -a resnext101 --root /content --save-dir model --max-epoch 1
