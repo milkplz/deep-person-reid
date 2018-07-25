@@ -2,15 +2,31 @@ python train_imgreid_xent.py -d videotag -a hacnn --root /Users/edwin/Documents/
 
 python train_imgreid_xent.py -d market1501 -a resnext101 --root /Users/luke/Documents/ml_datasets/person_re_id/ --save-dir /Users/luke/Documents/ml_models/hacnn --max-epoch 1
 python train_imgreid_xent.py \
-    -d dukemtmcreid \
-    -a resnext101 \
-    --evaluate \
+    -d market1501 \
+    -a hacnn \
+    --optim adam \
+    --lr 0.0003 \
     --root /Users/luke/Documents/ml_datasets/person_re_id/ \
     --save-dir /Users/luke/Documents/ml_models/hacnn \
+    --test-batch 32 \
+    --height 160 --width 64 \
     --max-epoch 1
 
 
-python train_imgreid_xent.py -d market1501 -a resnet50 --evaluate --resume saved-models/resnet50_xent_market1501.pth.tar --save-dir log/resnet50-xent-market1501 --test-batch 100 --gpu-devices 0
+    -d market1501 \
+  -a hacnn \
+  --root data \
+  --optim adam \
+  --lr 0.0003 \
+  --save-dir model \
+  --gpu-devices 0 \
+  --test-batch 32 \
+  --height 160 --width 64 \
+  --max-epoch 50 \
+  --load-weights checkpoint_ep50.pth.tar
+
+
+python train_imgreid_xent.py -d market1501 -a resnet50 --evaluate --resume saved-models/resnet50_xent_market1501.pth.tar --save-dir log/resnet50-xent-market1501 --test-batch 100 --gpu-devices 0 --height 160 --width 64
 
 
 

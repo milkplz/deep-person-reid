@@ -26,7 +26,8 @@ class VIDEOtag(BaseImgDataset):
         super(VIDEOtag, self).__init__()
         self.dataset_dir = osp.join(root, self.dataset_dir)
         self.train_dir = osp.join(self.dataset_dir, 'bounding_box_train')
-        self.query_dir = osp.join(self.dataset_dir, 'query')
+        # self.query_dir = osp.join(self.dataset_dir, 'query')
+        self.query_dir = osp.join(self.dataset_dir, 'bounding_box_test')
         self.gallery_dir = osp.join(self.dataset_dir, 'bounding_box_test')
 
         self._check_before_run()
@@ -38,7 +39,7 @@ class VIDEOtag(BaseImgDataset):
         num_total_imgs = num_train_imgs + num_query_imgs + num_gallery_imgs
 
         if verbose:
-            print("=> Market1501 loaded")
+            print("=> VIDEOtag loaded")
             print("Dataset statistics:")
             print("  ------------------------------")
             print("  subset   | # ids | # images")
@@ -85,13 +86,14 @@ class VIDEOtag(BaseImgDataset):
 
         dataset = []
         for img_path in img_paths:
-            pid, frame = map(int, pattern.search(img_path).groups())
+            pid, _ = map(int, pattern.search(img_path).groups())
             if pid == -1: continue  # junk images are just ignored
             # assert 0 <= pid <= 1501  # pid == 0 means background
             # assert 1 <= camid <= 6
             # camid -= 1 # index starts from 0
+            camid = 1 # ignore camid, fixed 1
             if relabel: pid = pid2label[pid]
-            dataset.append((img_path, pid, 1))
+            dataset.append((img_path, pid, camid))
 
         num_pids = len(pid_container)
         num_imgs = len(dataset)

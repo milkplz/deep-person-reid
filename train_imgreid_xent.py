@@ -128,14 +128,14 @@ def main():
     )
 
     transform_train = T.Compose([
-        T.Random2DTranslation(args.height, args.width),
-        T.RandomHorizontalFlip(),
+        T.Random2DTranslation(args.height, args.width, p=0),
+        # T.RandomHorizontalFlip(),
         T.ToTensor(),
         T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
 
     transform_test = T.Compose([
-        T.Resize((args.height, args.width)),
+        T.Resize((args.height, args.width, p=0)),
         T.ToTensor(),
         T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
@@ -275,6 +275,7 @@ def train(epoch, model, criterion, optimizer, trainloader, use_gpu, freeze_bn=Fa
             imgs, pids = imgs.cuda(), pids.cuda()
         
         outputs = model(imgs)
+        
         if isinstance(outputs, tuple):
             loss = DeepSupervision(criterion, outputs, pids)
         else:
