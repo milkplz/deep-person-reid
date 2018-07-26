@@ -258,7 +258,6 @@ def main():
             
         save_checkpoint({
             'state_dict': state_dict,
-            'rank1': rank1,
             'epoch': epoch,
         }, True, osp.join(args.save_dir, 'checkpoint_ep' + str(epoch+1) + '.pth.tar'))
 
