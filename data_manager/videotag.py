@@ -90,7 +90,7 @@ class VIDEOtag(BaseImgDataset):
             # assert 0 <= pid <= 1501  # pid == 0 means background
             # assert 1 <= camid <= 6
             # camid -= 1 # index starts from 0
-            camid = 1 # ignore camid, fixed 1
+            camid = 0 # ignore camid, fixed 1
             if relabel: pid = pid2label[pid]
             dataset.append((img_path, pid, camid))
 
