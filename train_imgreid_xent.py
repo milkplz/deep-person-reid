@@ -229,7 +229,7 @@ def main():
         train_time += round(time.time() - start_train_time)
         
         scheduler.step()
-        
+        '''
         if (epoch+1) > args.start_eval and args.eval_step > 0 and (epoch+1) % args.eval_step == 0 or (epoch+1) == args.max_epoch:
             print("==> Test")
             rank1 = test(model, queryloader, galleryloader, use_gpu)
@@ -249,6 +249,18 @@ def main():
                 'rank1': rank1,
                 'epoch': epoch,
             }, is_best, osp.join(args.save_dir, 'checkpoint_ep' + str(epoch+1) + '.pth.tar'))
+        '''
+
+        if use_gpu:
+            state_dict = model.module.state_dict()
+        else:
+            state_dict = model.state_dict()
+            
+        save_checkpoint({
+            'state_dict': state_dict,
+            'rank1': rank1,
+            'epoch': epoch,
+        }, True, osp.join(args.save_dir, 'checkpoint_ep' + str(epoch+1) + '.pth.tar'))
 
     print("==> Best Rank-1 {:.1%}, achieved at epoch {}".format(best_rank1, best_epoch))
 
