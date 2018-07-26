@@ -111,7 +111,9 @@ def eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
         # remove gallery samples that have the same pid and camid with query
         order = indices[q_idx]
         remove = (g_pids[order] == q_pid) & (g_camids[order] == q_camid)
+        print('remove', remove)
         keep = np.invert(remove)
+        print('keep', keep)
 
         # compute cmc curve
         orig_cmc = matches[q_idx][keep] # binary vector, positions with value 1 are correct matches
