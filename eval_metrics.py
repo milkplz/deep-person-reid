@@ -123,7 +123,7 @@ def eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
         print('remove', remove)
         keep = np.invert(remove)
         print('keep', keep)
-
+        
         # compute cmc curve
         orig_cmc = matches[q_idx][keep] # binary vector, positions with value 1 are correct matches
         print('np.any(orig_cmc):', np.any(orig_cmc))

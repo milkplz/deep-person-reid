@@ -23,6 +23,8 @@ class ConvBlock(nn.Module):
     """
     def __init__(self, in_c, out_c, k, s=1, p=0):
         super(ConvBlock, self).__init__()
+        # torch.nn.Conv2d 가 weights 값을 자동으로 설정해줌
+        # out_c 이 filter 개수임.
         self.conv = nn.Conv2d(in_c, out_c, k, stride=s, padding=p)
         self.bn = nn.BatchNorm2d(out_c)
 

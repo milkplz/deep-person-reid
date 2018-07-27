@@ -128,9 +128,9 @@ def main():
     )
 
     transform_train = T.Compose([
-        # T.Random2DTranslation(args.height, args.width),
-        T.Resize((args.height, args.width)),
-        # T.RandomHorizontalFlip(),
+        T.Random2DTranslation(args.height, args.width),
+        # T.Resize((args.height, args.width)),
+        T.RandomHorizontalFlip(),
         T.ToTensor(),
         T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
@@ -143,23 +143,23 @@ def main():
 
     pin_memory = True if use_gpu else False
 
+    trainset = ImageDataset(dataset.train, transform=transform_train, use_lmdb=args.use_lmdb, lmdb_path=dataset.train_lmdb_path)
     trainloader = DataLoader(
-        ImageDataset(dataset.train, transform=transform_train,
-                     use_lmdb=args.use_lmdb, lmdb_path=dataset.train_lmdb_path),
+        trainset,
         batch_size=args.train_batch, shuffle=True, num_workers=args.workers,
         pin_memory=pin_memory, drop_last=True,
     )
 
+    queryset = ImageDataset(dataset.query, transform=transform_test, use_lmdb=args.use_lmdb, lmdb_path=dataset.query_lmdb_path)
     queryloader = DataLoader(
-        ImageDataset(dataset.query, transform=transform_test,
-                     use_lmdb=args.use_lmdb, lmdb_path=dataset.query_lmdb_path),
+        queryset,
         batch_size=args.test_batch, shuffle=False, num_workers=args.workers,
         pin_memory=pin_memory, drop_last=False,
     )
 
+    galleryset = ImageDataset(dataset.gallery, transform=transform_test, use_lmdb=args.use_lmdb, lmdb_path=dataset.gallery_lmdb_path)
     galleryloader = DataLoader(
-        ImageDataset(dataset.gallery, transform=transform_test,
-                     use_lmdb=args.use_lmdb, lmdb_path=dataset.gallery_lmdb_path),
+        galleryset,
         batch_size=args.test_batch, shuffle=False, num_workers=args.workers,
         pin_memory=pin_memory, drop_last=False,
     )
@@ -229,7 +229,7 @@ def main():
         train_time += round(time.time() - start_train_time)
         
         scheduler.step()
-        
+        '''
         if (epoch+1) > args.start_eval and args.eval_step > 0 and (epoch+1) % args.eval_step == 0 or (epoch+1) == args.max_epoch:
             print("==> Test")
             rank1 = test(model, queryloader, galleryloader, use_gpu)
@@ -249,8 +249,9 @@ def main():
                 'rank1': rank1,
                 'epoch': epoch,
             }, is_best, osp.join(args.save_dir, 'checkpoint_ep' + str(epoch+1) + '.pth.tar'))
-        
         '''
+        
+        
         if use_gpu:
             state_dict = model.module.state_dict()
         else:
@@ -260,7 +261,7 @@ def main():
             'state_dict': state_dict,
             'epoch': epoch,
         }, True, osp.join(args.save_dir, 'checkpoint_ep' + str(epoch+1) + '.pth.tar'))
-        '''
+        
 
     print("==> Best Rank-1 {:.1%}, achieved at epoch {}".format(best_rank1, best_epoch))
 
