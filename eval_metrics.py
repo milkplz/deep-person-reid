@@ -109,18 +109,19 @@ def eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
         q_pid = q_pids[q_idx]
         q_camid = q_camids[q_idx]
 
-        print('q_idx', q_idx)
-        print('q_pid', q_pid)
-        print('q_camid', q_camid)
+        # print('q_idx', q_idx)
+        # print('q_pid', q_pid)
+        # print('q_camid', q_camid)
         
         # remove gallery samples that have the same pid and camid with query
         order = indices[q_idx]
-        print('order', order)
-        print('g_pids[order]', g_pids[order])
-        print('g_camids[order]', g_camids[order])
+        # print('order', order)
+        # print('g_pids[order]', g_pids[order])
+        # print('g_camids[order]', g_camids[order])
         
-        remove = (g_pids[order] == q_pid) & (g_camids[order] == q_camid)
-        print('remove', remove)
+        # remove = (g_pids[order] == q_pid) & (g_camids[order] == q_camid)
+        remove = (g_pids[order] == q_pid)
+        # print('remove', remove)
         keep = np.invert(remove)
         print('keep', keep)
         
