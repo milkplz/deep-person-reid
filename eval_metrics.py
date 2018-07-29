@@ -119,8 +119,7 @@ def eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
         # print('g_pids[order]', g_pids[order])
         # print('g_camids[order]', g_camids[order])
         
-        # remove = (g_pids[order] == q_pid) & (g_camids[order] == q_camid)
-        remove = (g_pids[order] == q_pid)
+        remove = (g_pids[order] == q_pid) & (g_camids[order] == q_camid)
         # print('remove', remove)
         keep = np.invert(remove)
         print('keep', keep)
