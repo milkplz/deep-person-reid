@@ -91,7 +91,7 @@ class VIDEOtag(BaseImgDataset):
             # assert 1 <= camid <= 6
             # camid -= 1 # index starts from 0
             camid = 1 # ignore camid, fixed 1
-            if relabel: pid = pid2label[pid]
+            # if relabel: pid = pid2label[pid]
             dataset.append((img_path, pid, camid))
 
         num_pids = len(pid_container)

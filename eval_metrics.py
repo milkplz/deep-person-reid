@@ -90,6 +90,7 @@ def eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
     Key: for each query identity, its gallery images from the same camera view are discarded.
     """
     num_q, num_g = distmat.shape
+    print("num_q, num_g", num_q, num_g)
     if num_g < max_rank:
         max_rank = num_g
         print("Note: number of gallery samples is quite small, got {}".format(num_g))
@@ -98,7 +99,8 @@ def eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
 
     print("q_pids", len(q_pids))
     print("g_pids", len(g_pids))
-    print('indices', indices)
+    print('indices', indices.shape)
+    print('matches', matches)
 
     # compute cmc curve for each query
     all_cmc = []
