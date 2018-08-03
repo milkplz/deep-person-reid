@@ -99,7 +99,7 @@ def eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
 
     print("q_pids", len(q_pids))
     print("g_pids", len(g_pids))
-    print('indices', indices.shape)
+    print('indices', indices)
     print('matches', matches)
 
     # compute cmc curve for each query
