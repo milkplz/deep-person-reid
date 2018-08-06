@@ -170,7 +170,8 @@ def eval_videotag(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
         # keep = np.zeros((g_pids.size), dtype="i")
         res = g_pids[order[0]] == q_pid
         all_res.append(res)
-        all_dis.append(matches[q_idx][order[0]])
+        if res == 1:
+            all_dis.append(distmat[q_idx][order[0]])
         '''
         # compute cmc curve
         orig_cmc = matches[q_idx][keep] # binary vector, positions with value 1 are correct matches

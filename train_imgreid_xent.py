@@ -376,7 +376,7 @@ def test(model, queryloader, galleryloader, use_gpu, ranks=[1, 5, 10, 20]):
         # print("Rank-{:<3}: {:.1%}".format(r, cmc[r-1]))
     print("------------------")
 
-    return cmc[0]
+    return 0
 
 
 if __name__ == '__main__':
