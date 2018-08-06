@@ -109,7 +109,7 @@ def eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
         order = indices[q_idx]
         
         # remove = (g_pids[order] == q_pid) & (g_camids[order] == q_camid)
-        remove = (g_pids[order] == q_pid)
+        remove = (g_pids[order] == q_pid) & (g_camids[order] == q_camid)
         keep = np.invert(remove)
         
         # compute cmc curve
@@ -156,6 +156,7 @@ def eval_videotag(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
     # all_cmc = []
     # all_AP = []
     all_res = []
+    all_dis = []
     num_valid_q = 0. # number of valid query
     for q_idx in range(num_q):
         # get query pid and camid
@@ -169,6 +170,7 @@ def eval_videotag(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
         # keep = np.zeros((g_pids.size), dtype="i")
         res = g_pids[order[0]] == q_pid
         all_res.append(res)
+        all_dis.append(matches[q_idx][order[0]])
         '''
         # compute cmc curve
         orig_cmc = matches[q_idx][keep] # binary vector, positions with value 1 are correct matches
@@ -198,7 +200,7 @@ def eval_videotag(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
     mAP = np.mean(all_AP)
     '''
 
-    return all_res, np.mean(all_res)
+    return all_dis, np.mean(all_res)
 
 
 def evaluate(distmat, q_pids, g_pids, q_camids, g_camids, max_rank=50, dataset_type='cuhk03', use_cython=True):
