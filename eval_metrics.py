@@ -211,6 +211,6 @@ def evaluate(distmat, q_pids, g_pids, q_camids, g_camids, max_rank=50, dataset_t
         if use_cython and CYTHON_EVAL_AVAI:
             return eval_market1501_wrap(distmat, q_pids, g_pids, q_camids, g_camids, max_rank)
         else:
-            return eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank)
+            return eval_videotag(distmat, q_pids, g_pids, q_camids, g_camids, max_rank)
     else:
         return eval_videotag(distmat, q_pids, g_pids, q_camids, g_camids, max_rank)
