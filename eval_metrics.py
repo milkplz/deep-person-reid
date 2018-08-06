@@ -90,17 +90,11 @@ def eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
     Key: for each query identity, its gallery images from the same camera view are discarded.
     """
     num_q, num_g = distmat.shape
-    print("num_q, num_g", num_q, num_g)
     if num_g < max_rank:
         max_rank = num_g
         print("Note: number of gallery samples is quite small, got {}".format(num_g))
     indices = np.argsort(distmat, axis=1)
     matches = (g_pids[indices] == q_pids[:, np.newaxis]).astype(np.int32)
-
-    print("q_pids", len(q_pids))
-    print("g_pids", len(g_pids))
-    print('indices', indices)
-    print('matches', matches)
 
     # compute cmc curve for each query
     all_cmc = []
@@ -110,27 +104,15 @@ def eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
         # get query pid and camid
         q_pid = q_pids[q_idx]
         q_camid = q_camids[q_idx]
-
-        print('q_idx', q_idx)
-        print('q_pid', q_pid)
-        print('q_camid', q_camid)
         
         # remove gallery samples that have the same pid and camid with query
         order = indices[q_idx]
-        print('order', order)
-        print('g_pids[order]', g_pids[order])
-        print('g_camids[order]', g_camids[order])
         
         remove = (g_pids[order] == q_pid) & (g_camids[order] == q_camid)
-        print('remove', remove)
         keep = np.invert(remove)
-        print('keep', keep)
-        print('matches[q_idx]', matches[q_idx])
         
         # compute cmc curve
         orig_cmc = matches[q_idx][keep] # binary vector, positions with value 1 are correct matches
-        print('orig_cmc', orig_cmc)
-        print('np.any(orig_cmc):', np.any(orig_cmc))
         if not np.any(orig_cmc):
             # this condition is true when query identity does not appear in gallery
             continue
@@ -178,13 +160,11 @@ def eval_videotag(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
     num_valid_q = 0. # number of valid query
     for q_idx in range(num_q):
         # get query pid and camid
-        q_pid = q_pids[q_idx]
-        q_camid = q_camids[q_idx]
+        # q_pid = q_pids[q_idx]
+        # q_camid = q_camids[q_idx]
 
         # remove gallery samples that have the same pid and camid with query
-        order = indices[q_idx]
-        # remove = (g_pids[order] == q_pid) & (g_camids[order] == q_camid)
-        # keep = np.invert(remove)
+        # order = indices[q_idx]
         keep = np.zeros((g_pids.size), dtype="i")
 
         # compute cmc curve
@@ -217,11 +197,13 @@ def eval_videotag(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
     return all_cmc, mAP
 
 
-def evaluate(distmat, q_pids, g_pids, q_camids, g_camids, max_rank=50, use_metric_cuhk03=False, use_cython=True):
-    if use_metric_cuhk03:
+def evaluate(distmat, q_pids, g_pids, q_camids, g_camids, max_rank=50, dataset_type='cuhk03', use_cython=True):
+    if dataset_type == 'cuhk03':
         return eval_cuhk03(distmat, q_pids, g_pids, q_camids, g_camids, max_rank)
-    else:
+    elif dataset_type == 'market1501':
         if use_cython and CYTHON_EVAL_AVAI:
             return eval_market1501_wrap(distmat, q_pids, g_pids, q_camids, g_camids, max_rank)
         else:
             return eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank)
+    else:
+        return eval_videotag(distmat, q_pids, g_pids, q_camids, g_camids, max_rank)
