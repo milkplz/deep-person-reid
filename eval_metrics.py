@@ -150,19 +150,21 @@ def eval_videotag(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
         print("Note: number of gallery samples is quite small, got {}".format(num_g))
     indices = np.argsort(distmat, axis=1)
     matches = (g_pids[indices] == q_pids[:, np.newaxis]).astype(np.int32)
-    
+
     # compute cmc curve for each query
     all_cmc = []
     all_AP = []
     num_valid_q = 0. # number of valid query
     for q_idx in range(num_q):
         # get query pid and camid
-        # q_pid = q_pids[q_idx]
-        # q_camid = q_camids[q_idx]
+        q_pid = q_pids[q_idx]
+        q_camid = q_camids[q_idx]
 
         # remove gallery samples that have the same pid and camid with query
-        # order = indices[q_idx]
-        keep = np.zeros((g_pids.size), dtype="i")
+        order = indices[q_idx]
+        remove = g_pids[order] == q_pid
+        keep = np.invert(remove)
+        # keep = np.zeros((g_pids.size), dtype="i")
 
         # compute cmc curve
         orig_cmc = matches[q_idx][keep] # binary vector, positions with value 1 are correct matches
