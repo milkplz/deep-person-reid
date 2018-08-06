@@ -99,6 +99,7 @@ def eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
     # compute cmc curve for each query
     all_cmc = []
     all_AP = []
+    all_dis = []
     num_valid_q = 0. # number of valid query
     for q_idx in range(num_q):
         # get query pid and camid
@@ -117,6 +118,14 @@ def eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
         if not np.any(orig_cmc):
             # this condition is true when query identity does not appear in gallery
             continue
+
+        _distmat = []
+        _matches = (g_pids == q_pid) & (g_camids != q_camid)
+        for idx, val in enumerate(_matches):
+            if val == True:
+                _distmat.append(distmat[q_idx][idx])
+        print(_distmat)
+        
 
         cmc = orig_cmc.cumsum()
         cmc[cmc > 1] = 1
