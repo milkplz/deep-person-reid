@@ -176,7 +176,7 @@ def eval_videotag(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
         
         # remove = (g_pids[order] == q_pid) & (g_camids[order] == q_camid)
         # keep = np.invert(remove)
-        keep = np.ones(len(g_pids))
+        keep = np.ones(len(g_pids), dtype=int)
         
         # compute cmc curve
         orig_cmc = matches[q_idx][keep] # binary vector, positions with value 1 are correct matches
