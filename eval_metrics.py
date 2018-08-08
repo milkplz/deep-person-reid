@@ -7,8 +7,6 @@ import copy
 from collections import defaultdict
 import sys
 
-np.set_printoptions(threshold=np.inf)
-
 try:
     from eval_lib.cython_eval import eval_market1501_wrap
     CYTHON_EVAL_AVAI = True
@@ -29,6 +27,7 @@ def eval_cuhk03(distmat, q_pids, g_pids, q_camids, g_camids, max_rank, N=100):
         print("Note: number of gallery samples is quite small, got {}".format(num_g))
     indices = np.argsort(distmat, axis=1)
     matches = (g_pids[indices] == q_pids[:, np.newaxis]).astype(np.int32)
+    print('matches', matches)
 
     # compute cmc curve for each query
     all_cmc = []
@@ -163,7 +162,6 @@ def eval_videotag(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
         print("Note: number of gallery samples is quite small, got {}".format(num_g))
     indices = np.argsort(distmat, axis=1)
     matches = (g_pids[indices] == q_pids[:, np.newaxis]).astype(np.int32)
-    print('matches', matches)
 
     # compute cmc curve for each query
     all_cmc = []
@@ -223,4 +221,4 @@ def evaluate(distmat, q_pids, g_pids, q_camids, g_camids, max_rank=50, dataset_t
         else:
             return eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank)
     else:
-        return eval_videotag(distmat, q_pids, g_pids, q_camids, g_camids, max_rank)
+        return eval_cuhk03(distmat, q_pids, g_pids, q_camids, g_camids, max_rank)
