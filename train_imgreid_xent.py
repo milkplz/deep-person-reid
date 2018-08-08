@@ -365,18 +365,16 @@ def test(model, queryloader, galleryloader, use_gpu, ranks=[1, 5, 10, 20]):
     distmat = distmat.numpy()
 
     print("Computing CMC and mAP")
-    all_dis, mAP = evaluate(distmat, q_pids, g_pids, q_camids, g_camids, dataset_type=args.dataset)
+    cmc, mAP = evaluate(distmat, q_pids, g_pids, q_camids, g_camids, use_metric_cuhk03=args.use_metric_cuhk03)
 
     print("Results ----------")
     print("mAP: {:.1%}".format(mAP))
-    print("all_dis: ", all_dis)
-    
-    # print("CMC curve")
-    # for r in ranks:
-        # print("Rank-{:<3}: {:.1%}".format(r, cmc[r-1]))
+    print("CMC curve")
+    for r in ranks:
+        print("Rank-{:<3}: {:.1%}".format(r, cmc[r-1]))
     print("------------------")
 
-    return 0
+    return cmc[0]
 
 
 if __name__ == '__main__':

@@ -124,7 +124,7 @@ def eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
         for idx, val in enumerate(_matches):
             if val == True:
                 _distmat.append(distmat[q_idx][idx])
-        print(_distmat)
+        # print(_distmat)
         
 
         cmc = orig_cmc.cumsum()
@@ -206,6 +206,8 @@ def eval_videotag(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
     mAP = np.mean(all_AP)
 
     return all_cmc, mAP
+
+    # return all_dis, np.mean(all_res)
 
 
 def evaluate(distmat, q_pids, g_pids, q_camids, g_camids, max_rank=50, dataset_type='cuhk03', use_cython=True):
