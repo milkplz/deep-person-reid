@@ -162,32 +162,28 @@ def eval_videotag(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
     matches = (g_pids[indices] == q_pids[:, np.newaxis]).astype(np.int32)
 
     # compute cmc curve for each query
-    # all_cmc = []
-    # all_AP = []
-    all_res = []
+    all_cmc = []
+    all_AP = []
     all_dis = []
     num_valid_q = 0. # number of valid query
     for q_idx in range(num_q):
         # get query pid and camid
         q_pid = q_pids[q_idx]
         q_camid = q_camids[q_idx]
-
+        
         # remove gallery samples that have the same pid and camid with query
-        order = indices[q_idx]
-        # remove = (g_pids[order] == q_pid)
+        # order = indices[q_idx]
+        
+        # remove = (g_pids[order] == q_pid) & (g_camids[order] == q_camid)
         # keep = np.invert(remove)
-        # keep = np.zeros((g_pids.size), dtype="i")
-        res = g_pids[order[0]] == q_pid
-        all_res.append(res)
-        if res == 1:
-            all_dis.append(distmat[q_idx][order[0]])
-        '''
+        keep = np.ones(len(g_pids))
+        
         # compute cmc curve
         orig_cmc = matches[q_idx][keep] # binary vector, positions with value 1 are correct matches
         if not np.any(orig_cmc):
             # this condition is true when query identity does not appear in gallery
             continue
-        
+
         cmc = orig_cmc.cumsum()
         cmc[cmc > 1] = 1
 
@@ -208,9 +204,8 @@ def eval_videotag(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
     all_cmc = np.asarray(all_cmc).astype(np.float32)
     all_cmc = all_cmc.sum(0) / num_valid_q
     mAP = np.mean(all_AP)
-    '''
 
-    return all_dis, np.mean(all_res)
+    return all_cmc, mAP
 
 
 def evaluate(distmat, q_pids, g_pids, q_camids, g_camids, max_rank=50, dataset_type='cuhk03', use_cython=True):
