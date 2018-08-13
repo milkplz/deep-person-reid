@@ -121,11 +121,12 @@ def eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
             # this condition is true when query identity does not appear in gallery
             continue
 
-        _distmat = []
-        _matches = (g_pids == q_pid) & (g_camids != q_camid)
-        for idx, val in enumerate(_matches):
-            if val == True:
-                _distmat.append(distmat[q_idx][idx])
+        # for print
+        # _distmat = []
+        # _matches = (g_pids == q_pid) & (g_camids != q_camid)
+        # for idx, val in enumerate(_matches):
+        #     if val == True:
+        #         _distmat.append(distmat[q_idx][idx])
         # print(_distmat)
         
 

@@ -2,7 +2,6 @@ python train_imgreid_xent.py -d videotag -a hacnn --root /Users/edwin/Documents/
 
 python train_imgreid_xent.py -d market1501 -a resnext101 --root /Users/luke/Documents/ml_datasets/person_re_id/ --save-dir /Users/luke/Documents/ml_models/hacnn --max-epoch 1
 python train_imgreid_xent.py \
-    --evaluate \
     -d videotag \
     -a hacnn \
     --optim adam \
