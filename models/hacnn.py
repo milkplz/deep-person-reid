@@ -282,8 +282,8 @@ class HACNN(nn.Module):
 
     def forward(self, x):
 
-        # assert x.size(2) == 160 and x.size(3) == 64, \
-        assert x.size(2) == 280 and x.size(3) == 200, \
+        assert x.size(2) == 160 and x.size(3) == 64, \
+        # assert x.size(2) == 280 and x.size(3) == 200, \
             "Input size does not match, expected (280, 200) but got ({}, {})".format(x.size(2), x.size(3))
         x = self.conv(x)
 
