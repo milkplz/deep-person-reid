@@ -4,8 +4,8 @@ python train_imgreid_xent.py -d market1501 -a resnext101 --root /Users/luke/Docu
 python train_imgreid_xent.py \
     -d videotag \
     -a hacnn \
-    --optim adam \
-    --lr 0.0003 \
+    --optim sgd \
+    --lr 0.03 \
     --root /Users/luke/Documents/ml_datasets/person_re_id/ \
     --save-dir /Users/luke/Documents/ml_models/hacnn \
     --test-batch 32 \
