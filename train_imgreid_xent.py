@@ -26,6 +26,7 @@ from utils.logger import Logger
 from utils.torchtools import set_bn_to_eval, count_num_param
 from eval_metrics import evaluate
 from optimizers import init_optim
+from torchsummary import summary
 
 
 parser = argparse.ArgumentParser(description='Train image model with cross entropy loss')
@@ -167,6 +168,7 @@ def main():
     print("Initializing model: {}".format(args.arch))
     model = models.init_model(name=args.arch, num_classes=dataset.num_train_pids, loss={'xent'}, use_gpu=use_gpu)
     print("Model size: {:.3f} M".format(count_num_param(model)))
+    # summary(model, (3, 160, 64))
 
     criterion = CrossEntropyLabelSmooth(num_classes=dataset.num_train_pids, use_gpu=use_gpu)
     optimizer = init_optim(args.optim, model.parameters(), args.lr, args.weight_decay)

@@ -24,7 +24,8 @@ class VIDEOtag(BaseImgDataset):
 
     def __init__(self, root='data', verbose=True, use_lmdb=False, **kwargs):
         super(VIDEOtag, self).__init__()
-        self.dataset_dir = osp.join(root, self.dataset_dir)
+        # self.dataset_dir = osp.join(root, self.dataset_dir)
+        self.dataset_dir = osp.join(root)
         self.train_dir = osp.join(self.dataset_dir, 'bounding_box_train')
         self.query_dir = osp.join(self.dataset_dir, 'query')
         self.gallery_dir = osp.join(self.dataset_dir, 'bounding_box_test')

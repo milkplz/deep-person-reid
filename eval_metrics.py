@@ -101,7 +101,6 @@ def eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
     # compute cmc curve for each query
     all_cmc = []
     all_AP = []
-    all_dis = []
     num_valid_q = 0. # number of valid query
     for q_idx in range(num_q):
         # get query pid and camid
@@ -164,10 +163,17 @@ def eval_videotag(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
     indices = np.argsort(distmat, axis=1)
     matches = (g_pids[indices] == q_pids[:, np.newaxis]).astype(np.int32)
     print('distmat', distmat[indices])
+
+    all_dis = []
+    for q_idx, q_matches in enumerate(matches):
+        for idx, val in enumerate(q_matches):
+            if val == True:
+                all_dis.append(distmat[q_idx][idx])
+    
     # compute cmc curve for each query
     all_cmc = []
     all_AP = []
-    all_dis = []
+    
     num_valid_q = 0. # number of valid query
     for q_idx in range(num_q):
         # get query pid and camid
@@ -186,6 +192,8 @@ def eval_videotag(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
         if not np.any(orig_cmc):
             # this condition is true when query identity does not appear in gallery
             continue
+
+        row_distmat = distmat[indices][q_idx][keep]
 
         cmc = orig_cmc.cumsum()
         cmc[cmc > 1] = 1
