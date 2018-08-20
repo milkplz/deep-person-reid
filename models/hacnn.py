@@ -282,7 +282,7 @@ class HACNN(nn.Module):
         theta[:,:,:2] = scale_factors
         # print('theta', theta.size(), theta)
         theta[:,:,-1] = theta_i
-        print('theta', theta.size(), theta)
+        # print('theta', theta.size(), theta)
         if self.use_gpu: theta = theta.cuda()
         return theta
 
