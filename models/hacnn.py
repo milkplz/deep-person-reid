@@ -353,9 +353,12 @@ class HACNN(nn.Module):
             x_local_list = []
             for region_idx in range(4):
                 x_local_i = x3_local_list[region_idx]
+                print('x_local_i', x_local_i.size(), x_local_i)
                 x_local_i = F.avg_pool2d(x_local_i, x_local_i.size()[2:]).view(x_local_i.size(0), -1)
+                print('x_local_i', x_local_i.size(), x_local_i)
                 x_local_list.append(x_local_i)
             x_local = torch.cat(x_local_list, 1)
+            print('x_local', x_local.size(), x_local)
             x_local = self.fc_local(x_local)
 
         if not self.training:

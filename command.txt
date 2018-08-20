@@ -28,11 +28,11 @@ python train_imgreid_xent.py \
 
 python train_imgreid_xent.py \
   -d videotag \
-  --root /Users/luke/Documents/ml_datasets/person_re_id/videotag \
+  --root /Users/luke/Documents/ml_datasets/dataset_7 \
   -a hacnn \
   --evaluate \
   --use-cpu \
-  --load-weights /Users/luke/Documents/ml_models/person-reid/ha-cnn/videotag_dataset_7/ep50/checkpoint_ep50.pth.tar \
+  --load-weights /Users/luke/Documents/ml_models/hacnn/checkpoint_ep50.pth.tar \
   --save-dir log/videotag_dataset_7 \
   --test-batch 32 \
   --height 160 --width 64
