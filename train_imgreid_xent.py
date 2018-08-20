@@ -26,7 +26,7 @@ from utils.logger import Logger
 from utils.torchtools import set_bn_to_eval, count_num_param
 from eval_metrics import evaluate
 from optimizers import init_optim
-from torchsummary import summary
+# from torchsummary import summary
 
 
 parser = argparse.ArgumentParser(description='Train image model with cross entropy loss')
@@ -185,7 +185,10 @@ def main():
     if args.load_weights:
         # load pretrained weights but ignore layers that don't match in size
         print("Loading pretrained weights from '{}'".format(args.load_weights))
-        checkpoint = torch.load(args.load_weights)
+        if torch.cuda.is_available():
+            checkpoint = torch.load(args.load_weights)
+        else :
+            checkpoint = torch.load(args.load_weights, map_location='cpu')
         pretrain_dict = checkpoint['state_dict']
         model_dict = model.state_dict()
         pretrain_dict = {k: v for k, v in pretrain_dict.items() if k in model_dict and model_dict[k].size() == v.size()}

@@ -273,10 +273,16 @@ class HACNN(nn.Module):
     def transform_theta(self, theta_i, region_idx):
         """Transform theta to include (s_w, s_h),
         resulting in (batch, 2, 3)"""
+        # print('transform_theta ~')
+        # print('theta_i', theta_i.size(), theta_i)
         scale_factors = self.scale_factors[region_idx]
+        # print('scale_factors', scale_factors.size(), scale_factors)
         theta = torch.zeros(theta_i.size(0), 2, 3)
+        # print('theta', theta.size(), theta_i.size(0), theta)
         theta[:,:,:2] = scale_factors
+        # print('theta', theta.size(), theta)
         theta[:,:,-1] = theta_i
+        print('theta', theta.size(), theta)
         if self.use_gpu: theta = theta.cuda()
         return theta
 
