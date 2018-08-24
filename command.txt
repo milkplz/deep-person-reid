@@ -6,7 +6,7 @@ python train_imgreid_xent.py \
     -a hacnn \
     --optim sgd \
     --lr 0.03 \
-    --root /Users/luke/Documents/ml_datasets/person_re_id/ \
+    --root /Users/luke/Documents/ml_datasets/person_re_id/videotag \
     --save-dir /Users/luke/Documents/ml_models/hacnn \
     --test-batch 32 \
     --height 160 --width 64 \
@@ -28,15 +28,49 @@ python train_imgreid_xent.py \
 
 python train_imgreid_xent.py \
   -d videotag \
-  --root /Users/luke/Documents/ml_datasets/dataset_7 \
+  --root /Users/luke/Documents/ml_datasets/person_re_id/videotag \
   -a hacnn \
   --evaluate \
   --use-cpu \
-  --load-weights /Users/luke/Documents/ml_models/hacnn/checkpoint_ep50.pth.tar \
+  --load-weights /Users/luke/Documents/ml_models/person-reid/ha-cnn/videotag_dataset_7/ep50/checkpoint_ep50.pth.tar \
   --save-dir log/videotag_dataset_7 \
   --test-batch 32 \
   --height 160 --width 64
 
+
+python train_imgreid_xent.py \
+  -d market1501 \
+  --root /Users/luke/Documents/ml_datasets/person_re_id/Market1501_original \
+  -a hacnn \
+  --evaluate \
+  --use-cpu \
+  --load-weights /Users/luke/Documents/ml_models/person-reid/ha-cnn/videotag_dataset_7/ep50/checkpoint_ep50.pth.tar \
+  --save-dir log/videotag_dataset_7 \
+  --test-batch 32 \
+  --height 160 --width 64
+
+
+python train_imgreid_xent.py \
+  -d market1501 \
+  --root /Users/luke/Documents/ml_datasets/person_re_id/Market1501_original \
+  -a hacnn \
+  --evaluate \
+  --use-cpu \
+  --load-weights /Users/luke/Documents/ml_models/person-reid/ha-cnn/market1501/ep100/checkpoint_ep100.pth.tar \
+  --save-dir log/videotag_dataset_7 \
+  --test-batch 32 \
+  --height 160 --width 64
+
+python train_imgreid_xent.py \
+  -d videotag \
+  --root /Users/luke/Documents/ml_datasets/person_re_id/videotag \
+  -a hacnn \
+  --evaluate \
+  --use-cpu \
+  --load-weights /Users/luke/Documents/ml_models/person-reid/ha-cnn/market1501/ep100/checkpoint_ep100.pth.tar \
+  --save-dir log/videotag_dataset_7 \
+  --test-batch 32 \
+  --height 160 --width 64
 
 
 

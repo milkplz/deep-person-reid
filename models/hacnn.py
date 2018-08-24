@@ -65,6 +65,11 @@ class InceptionA(nn.Module):
         s3 = self.stream3(x)
         s4 = self.stream4(x)
         y = torch.cat([s1, s2, s3, s4], dim=1)
+        print('InceptionA s1', s1.size())
+        print('InceptionA s2', s2.size())
+        print('InceptionA s3', s3.size())
+        print('InceptionA s4', s4.size())
+        print('InceptionA y', y.size())
         return y
 
 
@@ -96,7 +101,11 @@ class InceptionB(nn.Module):
         s1 = self.stream1(x)
         s2 = self.stream2(x)
         s3 = self.stream3(x)
+        print('InceptionB s1', s1.size())
+        print('InceptionB s2', s2.size())
+        print('InceptionB s3', s3.size())
         y = torch.cat([s1, s2, s3], dim=1)
+        print('InceptionB y', y.size())
         return y
 
 
@@ -109,13 +118,18 @@ class SpatialAttn(nn.Module):
 
     def forward(self, x):
         # global cross-channel averaging
+        print('SpatialAttn', x.size())
         x = x.mean(1, keepdim=True)
+        print('SpatialAttn', x.size())
         # 3-by-3 conv
         x = self.conv1(x)
+        print('SpatialAttn', x.size())
         # bilinear resizing
         x = F.upsample(x, (x.size(2)*2, x.size(3)*2), mode='bilinear', align_corners=True)
+        print('SpatialAttn', x.size())
         # scaling conv
         x = self.conv2(x)
+        print('SpatialAttn', x.size())
         return x
 
 
@@ -129,10 +143,14 @@ class ChannelAttn(nn.Module):
 
     def forward(self, x):
         # squeeze operation (global average pooling)
+        print('ChannelAttn', x.size())
         x = F.avg_pool2d(x, x.size()[2:])
+        print('ChannelAttn', x.size())
         # excitation operation (2 conv layers)
         x = self.conv1(x)
+        print('ChannelAttn', x.size())
         x = self.conv2(x)
+        print('ChannelAttn', x.size())
         return x
 
 
@@ -149,9 +167,13 @@ class SoftAttn(nn.Module):
 
     def forward(self, x):
         y_spatial = self.spatial_attn(x)
+        print('SoftAttn', y_spatial.size())
         y_channel = self.channel_attn(x)
+        print('SoftAttn', y_channel.size())
         y = y_spatial * y_channel
+        print('SoftAttn', y.size())
         y = F.sigmoid(self.conv(y))
+        print('SoftAttn', y.size())
         return y
 
 
@@ -169,9 +191,12 @@ class HardAttn(nn.Module):
     def forward(self, x):
         # squeeze operation (global average pooling)
         x = F.avg_pool2d(x, x.size()[2:]).view(x.size(0), x.size(1))
+        print('HardAttn', x.size())
         # predict transformation parameters
         theta = F.tanh(self.fc(x))
+        print('HardAttn', theta.size())
         theta = theta.view(-1, 4, 2)
+        print('HardAttn', theta.size())
         return theta
 
 
@@ -184,7 +209,9 @@ class HarmAttn(nn.Module):
 
     def forward(self, x):
         y_soft_attn = self.soft_attn(x)
+        print('HarmAttn', y_soft_attn.size())
         theta = self.hard_attn(x)
+        print('HarmAttn', theta.size())
         return y_soft_attn, theta
 
 
@@ -266,8 +293,10 @@ class HACNN(nn.Module):
         - x: (batch, channel, height, width)
         - theta: (batch, 2, 3)
         """
+        print('stn', x.size())
         grid = F.affine_grid(theta, x.size())
         x = F.grid_sample(x, grid)
+        print('stn', x.size())
         return x
 
     def transform_theta(self, theta_i, region_idx):
@@ -295,87 +324,127 @@ class HACNN(nn.Module):
         # ============== Block 1 ==============
         # global branch
         x1 = self.inception1(x)
+        print('x1', x1.size())
         x1_attn, x1_theta = self.ha1(x1)
+        print('x1_attn', x1_attn.size(), 'x1_theta', x1_theta.size())
         x1_out = x1 * x1_attn
+        print('x1_out', x1_out.size())
         # local branch
         if self.learn_region:
             x1_local_list = []
             for region_idx in range(4):
                 x1_theta_i = x1_theta[:,region_idx,:]
+                print('x1_theta_i', x1_theta_i.size())
                 x1_theta_i = self.transform_theta(x1_theta_i, region_idx)
+                print('x1_theta_i', x1_theta_i.size())
                 x1_trans_i = self.stn(x, x1_theta_i)
+                print('x1_trans_i', x1_trans_i.size())
                 x1_trans_i = F.upsample(x1_trans_i, (24, 28), mode='bilinear', align_corners=True)
+                print('x1_trans_i', x1_trans_i.size())
                 x1_local_i = self.local_conv1(x1_trans_i)
+                print('x1_local_i', x1_local_i.size())
                 x1_local_list.append(x1_local_i)
 
         # ============== Block 2 ==============
         # Block 2
         # global branch
         x2 = self.inception2(x1_out)
+        print('x2', x2.size())
         x2_attn, x2_theta = self.ha2(x2)
+        print('x2_attn', x2_attn.size(), 'x2_theta', x2_theta.size())
         x2_out = x2 * x2_attn
+        print('x2_out', x2_out.size())
         # local branch
         if self.learn_region:
             x2_local_list = []
             for region_idx in range(4):
                 x2_theta_i = x2_theta[:,region_idx,:]
+                print('x2_theta_i', x2_theta_i.size())
                 x2_theta_i = self.transform_theta(x2_theta_i, region_idx)
+                print('x2_theta_i', x2_theta_i.size())
                 x2_trans_i = self.stn(x1_out, x2_theta_i)
+                print('x2_trans_i', x2_trans_i.size())
                 x2_trans_i = F.upsample(x2_trans_i, (12, 14), mode='bilinear', align_corners=True)
+                print('x2_trans_i', x2_trans_i.size())
                 x2_local_i = x2_trans_i + x1_local_list[region_idx]
+                print('x2_local_i', x2_local_i.size())
                 x2_local_i = self.local_conv2(x2_local_i)
+                print('x2_local_i', x2_local_i.size())
                 x2_local_list.append(x2_local_i)
 
         # ============== Block 3 ==============
         # Block 3
         # global branch
         x3 = self.inception3(x2_out)
+        print('x3', x3.size())
         x3_attn, x3_theta = self.ha3(x3)
+        print('x3_attn', x3_attn.size(), 'x3_theta', x3_theta.size())
         x3_out = x3 * x3_attn
+        print('x3_out', x3_out.size())
         # local branch
         if self.learn_region:
             x3_local_list = []
             for region_idx in range(4):
                 x3_theta_i = x3_theta[:,region_idx,:]
+                print('x3_theta_i', x3_theta_i.size())
                 x3_theta_i = self.transform_theta(x3_theta_i, region_idx)
+                print('x3_theta_i', x3_theta_i.size())
                 x3_trans_i = self.stn(x2_out, x3_theta_i)
+                print('x3_trans_i', x3_trans_i.size())
                 x3_trans_i = F.upsample(x3_trans_i, (6, 7), mode='bilinear', align_corners=True)
+                print('x3_trans_i', x3_trans_i.size())
                 x3_local_i = x3_trans_i + x2_local_list[region_idx]
+                print('x3_local_i', x3_local_i.size())
                 x3_local_i = self.local_conv3(x3_local_i)
+                print('x3_local_i', x3_local_i.size())
                 x3_local_list.append(x3_local_i)
 
         # ============== Feature generation ==============
         # global branch
-        x_global = F.avg_pool2d(x3_out, x3_out.size()[2:]).view(x3_out.size(0), x3_out.size(1))
+        x_global = F.avg_pool2d(x3_out, x3_out.size()[2:])
+        print('x_global', x_global.size())
+        x_global = x_global.view(x3_out.size(0), x3_out.size(1))
+        print('x_global', x_global.size())
         x_global = self.fc_global(x_global)
+        print('x_global', x_global.size())
         # local branch
         if self.learn_region:
             x_local_list = []
             for region_idx in range(4):
                 x_local_i = x3_local_list[region_idx]
-                print('x_local_i', x_local_i.size(), x_local_i)
-                x_local_i = F.avg_pool2d(x_local_i, x_local_i.size()[2:]).view(x_local_i.size(0), -1)
-                print('x_local_i', x_local_i.size(), x_local_i)
+                print('x_local_i', x_local_i.size())
+                x_local_i = F.avg_pool2d(x_local_i, x_local_i.size()[2:])
+                print('x_local_i', x_local_i.size())
+                x_local_i = x_local_i.view(x_local_i.size(0), -1)
+                print('x_local_i', x_local_i.size())
                 x_local_list.append(x_local_i)
             x_local = torch.cat(x_local_list, 1)
-            print('x_local', x_local.size(), x_local)
+            print('x_local', x_local.size())
             x_local = self.fc_local(x_local)
+            print('x_local', x_local.size())
 
         if not self.training:
             # l2 normalization before concatenation
             if self.learn_region:
                 x_global = x_global / x_global.norm(p=2, dim=1, keepdim=True)
+                print('x_global', x_global.shape, x_global)
                 x_local = x_local / x_local.norm(p=2, dim=1, keepdim=True)
-                return torch.cat([x_global, x_local], 1)
+                print('x_local', x_local.shape, x_local)
+                x_gloabl_local = torch.cat([x_global, x_local], 1)
+                print('x_gloabl_local', x_gloabl_local.shape, x_gloabl_local)
+                return x_gloabl_local
             else:
                 return x_global
 
         prelogits_global = self.classifier_global(x_global)
+        print('prelogits_global', prelogits_global.size())
         if self.learn_region:
             prelogits_local = self.classifier_local(x_local)
+            print('prelogits_local', prelogits_local.size())
         
         if self.loss == {'xent'}:
             if self.learn_region:
+                print('(prelogits_global, prelogits_local)', prelogits_global.size(), prelogits_local.size())
                 return (prelogits_global, prelogits_local)
             else:
                 return prelogits_global
