@@ -393,12 +393,12 @@ def test(model, queryloader, galleryloader, use_gpu, ranks=[1, 5, 10, 20]):
     print('distmat', distmat.size(), distmat)
 
     # torch.from_numpy(nd)
-    print('mm', distmat.size, qf.size, gf.size, gf.t().size)
-    mm = np.dot(qf.numpy(), gf.numpy().T)
-    print('mm', mm.shape, distmat.shape, qf.shape, gf.t().shape)
-    distmat = distmat.numpy() - mm*(-2)
-    # distmat.addmm_(1, -2, qf, gf.t())
-    print('distmat', distmat.size(), distmat)
+    # print('mm', distmat.size, qf.size, gf.size, gf.t().size)
+    # mm = np.dot(qf.numpy(), gf.numpy().T)
+    # print('mm', mm.shape, distmat.shape, qf.shape, gf.t().shape)
+    # distmat = distmat.numpy() - mm*(-2)
+    distmat.addmm_(1, -2, qf, gf.t())
+    print('distmat', distmat.shape, distmat)
     # distmat = distmat.numpy()
 
     print("Computing CMC and mAP")
