@@ -162,7 +162,9 @@ def eval_videotag(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
         print("Note: number of gallery samples is quite small, got {}".format(num_g))
     indices = np.argsort(distmat, axis=1)
     matches = (g_pids[indices] == q_pids[:, np.newaxis]).astype(np.int32)
-    print('distmat', distmat[indices])
+    print('g_pids', g_pids)
+    print('q_pids', q_pids)
+    print('matches', matches.shape, matches)
 
     all_dis = []
     for q_idx, q_matches in enumerate(matches):
@@ -188,12 +190,12 @@ def eval_videotag(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
         keep = np.ones(len(g_pids), dtype=int)
         
         # compute cmc curve
-        orig_cmc = matches[q_idx][keep] # binary vector, positions with value 1 are correct matches
+        orig_cmc = matches[q_idx] # binary vector, positions with value 1 are correct matches
+        print('matches[q_idx]', matches[q_idx])
+        print('orig_cmc', orig_cmc)
         if not np.any(orig_cmc):
             # this condition is true when query identity does not appear in gallery
             continue
-
-        row_distmat = distmat[indices][q_idx][keep]
 
         cmc = orig_cmc.cumsum()
         cmc[cmc > 1] = 1
@@ -230,4 +232,4 @@ def evaluate(distmat, q_pids, g_pids, q_camids, g_camids, max_rank=50, dataset_t
         else:
             return eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank)
     else:
-        return eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank)
+        return eval_videotag(distmat, q_pids, g_pids, q_camids, g_camids, max_rank)

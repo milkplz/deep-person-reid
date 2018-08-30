@@ -28,7 +28,7 @@ python train_imgreid_xent.py \
 
 python train_imgreid_xent.py \
   -d videotag \
-  --root /Users/luke/Documents/ml_datasets/person_re_id/videotag \
+  --root /Users/luke/Documents/ml_datasets/person_re_id/videotag_scene/dataset_7_lite \
   -a hacnn \
   --evaluate \
   --use-cpu \

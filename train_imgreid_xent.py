@@ -333,7 +333,9 @@ def test(model, queryloader, galleryloader, use_gpu, ranks=[1, 5, 10, 20]):
             batch_time.update(time.time() - end)
             
             features = features.data.cpu()
+            print('features', features.size(), features)
             qf.append(features)
+            print('qf', len(qf))
             q_pids.extend(pids)
             q_camids.extend(camids)
         qf = torch.cat(qf, 0)
@@ -363,11 +365,41 @@ def test(model, queryloader, galleryloader, use_gpu, ranks=[1, 5, 10, 20]):
 
     print("==> BatchTime(s)/BatchSize(img): {:.3f}/{}".format(batch_time.avg, args.test_batch))
 
+    print('qf', qf.size(), qf)
+    print('gf', gf.size(), gf)
+
     m, n = qf.size(0), gf.size(0)
-    distmat = torch.pow(qf, 2).sum(dim=1, keepdim=True).expand(m, n) + \
-              torch.pow(gf, 2).sum(dim=1, keepdim=True).expand(n, m).t()
-    distmat.addmm_(1, -2, qf, gf.t())
-    distmat = distmat.numpy()
+    print('m,n',m,n)
+    print('qf', qf.size(), qf)
+    qf_pow = torch.pow(qf, 2)
+    print('qf_pow', qf_pow.size(), qf_pow)
+    qf_sum = qf_pow.sum(dim=1, keepdim=True)
+    print('qf_sum', qf_sum.size(), qf_sum)
+    qf_exp = qf_sum.expand(m, n)
+    print('qf_exp', qf_exp.size(), qf_exp)
+
+    print('gf', gf.size(), gf)
+    gf_pow = torch.pow(gf, 2)
+    print('gf_pow', gf_pow.size(), gf_pow)
+    gf_sum = gf_pow.sum(dim=1, keepdim=True)
+    print('gf_sum', gf_sum.size(), gf_sum)
+    gf_exp = gf_sum.expand(n, m)
+    print('gf_exp', gf_exp.size(), gf_exp)
+    gf_t = gf_exp.t()
+    print('gf_t', gf_t.size(), gf_t)
+    # distmat = torch.pow(qf, 2).sum(dim=1, keepdim=True).expand(m, n) + \
+    #           torch.pow(gf, 2).sum(dim=1, keepdim=True).expand(n, m).t()
+    distmat = qf_exp + gf_t
+    print('distmat', distmat.size(), distmat)
+
+    # torch.from_numpy(nd)
+    print('mm', distmat.size, qf.size, gf.size, gf.t().size)
+    mm = np.dot(qf.numpy(), gf.numpy().T)
+    print('mm', mm.shape, distmat.shape, qf.shape, gf.t().shape)
+    distmat = distmat.numpy() - mm*(-2)
+    # distmat.addmm_(1, -2, qf, gf.t())
+    print('distmat', distmat.size(), distmat)
+    # distmat = distmat.numpy()
 
     print("Computing CMC and mAP")
     # cmc, mAP = evaluate(distmat, q_pids, g_pids, q_camids, g_camids, use_metric_cuhk03=args.use_metric_cuhk03)
