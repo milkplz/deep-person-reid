@@ -80,8 +80,8 @@ parser.add_argument('--freeze-bn', action='store_true',
 # Architecture
 parser.add_argument('-a', '--arch', type=str, default='resnet50', choices=models.get_names())
 # Miscs
-parser.add_argument('--#print-freq', type=int, default=10,
-                    help="#print frequency")
+parser.add_argument('--print-freq', type=int, default=10,
+                    help="print frequency")
 parser.add_argument('--seed', type=int, default=1,
                     help="manual seed")
 parser.add_argument('--resume', type=str, default='', metavar='PATH')
@@ -307,7 +307,7 @@ def train(epoch, model, criterion, optimizer, trainloader, use_gpu, freeze_bn=Fa
 
         losses.update(loss.item(), pids.size(0))
 
-        if (batch_idx+1) % args.#print_freq == 0:
+        if (batch_idx+1) % args.print_freq == 0:
             #print('Epoch: [{0}][{1}/{2}]\t'
                   'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
                   'Data {data_time.val:.4f} ({data_time.avg:.4f})\t'
