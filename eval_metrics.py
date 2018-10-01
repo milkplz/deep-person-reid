@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import #print_function
 from __future__ import division
 
 import numpy as np
@@ -10,10 +10,10 @@ import sys
 try:
     from eval_lib.cython_eval import eval_market1501_wrap
     CYTHON_EVAL_AVAI = True
-    print("Cython evaluation is AVAILABLE")
+    #print("Cython evaluation is AVAILABLE")
 except ImportError:
     CYTHON_EVAL_AVAI = False
-    print("Warning: Cython evaluation is UNAVAILABLE")
+    #print("Warning: Cython evaluation is UNAVAILABLE")
 
 
 def eval_cuhk03(distmat, q_pids, g_pids, q_camids, g_camids, max_rank, N=100):
@@ -24,10 +24,10 @@ def eval_cuhk03(distmat, q_pids, g_pids, q_camids, g_camids, max_rank, N=100):
     num_q, num_g = distmat.shape
     if num_g < max_rank:
         max_rank = num_g
-        print("Note: number of gallery samples is quite small, got {}".format(num_g))
+        #print("Note: number of gallery samples is quite small, got {}".format(num_g))
     indices = np.argsort(distmat, axis=1)
     matches = (g_pids[indices] == q_pids[:, np.newaxis]).astype(np.int32)
-    print('matches', matches)
+    #print('matches', matches)
 
     # compute cmc curve for each query
     all_cmc = []
@@ -93,7 +93,7 @@ def eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
     num_q, num_g = distmat.shape
     if num_g < max_rank:
         max_rank = num_g
-        print("Note: number of gallery samples is quite small, got {}".format(num_g))
+        #print("Note: number of gallery samples is quite small, got {}".format(num_g))
     indices = np.argsort(distmat, axis=1)
     matches = (g_pids[indices] == q_pids[:, np.newaxis]).astype(np.int32)
     
@@ -120,13 +120,13 @@ def eval_market1501(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
             # this condition is true when query identity does not appear in gallery
             continue
 
-        # for print
+        # for #print
         # _distmat = []
         # _matches = (g_pids == q_pid) & (g_camids != q_camid)
         # for idx, val in enumerate(_matches):
         #     if val == True:
         #         _distmat.append(distmat[q_idx][idx])
-        # print(_distmat)
+        # #print(_distmat)
         
 
         cmc = orig_cmc.cumsum()
@@ -159,12 +159,12 @@ def eval_videotag(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
     num_q, num_g = distmat.shape
     if num_g < max_rank:
         max_rank = num_g
-        print("Note: number of gallery samples is quite small, got {}".format(num_g))
+        #print("Note: number of gallery samples is quite small, got {}".format(num_g))
     indices = np.argsort(distmat, axis=1)
     matches = (g_pids[indices] == q_pids[:, np.newaxis]).astype(np.int32)
-    print('g_pids', g_pids)
-    print('q_pids', q_pids)
-    print('matches', matches.shape, matches)
+    #print('g_pids', g_pids)
+    #print('q_pids', q_pids)
+    #print('matches', matches.shape, matches)
 
     all_dis = []
     for q_idx, q_matches in enumerate(matches):
@@ -191,8 +191,8 @@ def eval_videotag(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
         
         # compute cmc curve
         orig_cmc = matches[q_idx] # binary vector, positions with value 1 are correct matches
-        print('matches[q_idx]', matches[q_idx])
-        print('orig_cmc', orig_cmc)
+        #print('matches[q_idx]', matches[q_idx])
+        #print('orig_cmc', orig_cmc)
         if not np.any(orig_cmc):
             # this condition is true when query identity does not appear in gallery
             continue

@@ -77,3 +77,16 @@ python train_imgreid_xent.py \
 
 
 python deep-person-reid/train_imgreid_xent.py -d market1501 -a resnext101 --root /content --save-dir model --max-epoch 1
+
+
+
+python train_imgreid_xent.py \
+  -d videotag \
+  --root /Users/luke/Documents/ml_datasets/person_re_id/videotag_scene/dataset_7_lite \
+  -a hacnn \
+  --evaluate \
+  --use-cpu \
+  --load-weights /Users/luke/Documents/ml_models/hacnn/checkpoint_ep50.pth.tar \
+  --save-dir log/videotag_dataset_7 \
+  --test-batch 32 \
+  --height 160 --width 64
