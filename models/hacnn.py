@@ -426,11 +426,11 @@ class HACNN(nn.Module):
         if not self.training:
             # l2 normalization before concatenation
             if self.learn_region:
-                print('x_global', x_global.shape, x_global)
+                # print('x_global', x_global.shape, x_global)
                 x_global_norm = x_global.norm(p=2, dim=1, keepdim=True)
                 x_global = x_global / x_global_norm
-                print('x_global', x_global.shape, x_global)
-                print('x_global_norm', x_global_norm.shape, x_global_norm)
+                # print('x_global', x_global.shape, x_global)
+                # print('x_global_norm', x_global_norm.shape, x_global_norm)
                 
                 x_local = x_local / x_local.norm(p=2, dim=1, keepdim=True)
                 # #print('x_local', x_local.shape, x_local)

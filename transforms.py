@@ -18,7 +18,6 @@ class Random2DTranslation(object):
     - p (float): probability of performing this transformation. Default: 0.5.
     """
     def __init__(self, height, width, p=0.5, interpolation=Image.BILINEAR):
-        print('Random2DTranslation', p)
         self.height = height
         self.width = width
         self.p = p
