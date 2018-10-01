@@ -400,9 +400,9 @@ def test(model, queryloader, galleryloader, use_gpu, ranks=[1, 5, 10, 20]):
     # print('mm', mm.shape, distmat.shape, qf.shape, gf.T.shape)
     # distmat = distmat.numpy() + mm*(-2)
     
-    # # distmat.addmm_(1, -2, qf, gf.t())
+    distmat.addmm_(1, -2, qf, gf.t())
     # print('distmat', distmat.shape, distmat)
-    # # distmat = distmat.numpy()
+    distmat = distmat.numpy()
 
     print("Computing CMC and mAP")
     # cmc, mAP = evaluate(distmat, q_pids, g_pids, q_camids, g_camids, use_metric_cuhk03=args.use_metric_cuhk03)
