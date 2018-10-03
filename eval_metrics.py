@@ -183,20 +183,18 @@ def eval_videotag(distmat, q_pids, g_pids, q_camids, g_camids, max_rank):
         q_camid = q_camids[q_idx]
         
         # remove gallery samples that have the same pid and camid with query
-        # order = indices[q_idx]
+        order = indices[q_idx]
         
         # remove = (g_pids[order] == q_pid) & (g_camids[order] == q_camid)
-        # keep = np.invert(remove)
-        keep = np.ones(len(g_pids), dtype=int)
+        remove = (g_pids[order] == q_pid) & (g_camids[order] == q_camid)
+        keep = np.invert(remove)
         
         # compute cmc curve
-        orig_cmc = matches[q_idx] # binary vector, positions with value 1 are correct matches
-        #print('matches[q_idx]', matches[q_idx])
-        #print('orig_cmc', orig_cmc)
+        orig_cmc = matches[q_idx][keep] # binary vector, positions with value 1 are correct matches
         if not np.any(orig_cmc):
             # this condition is true when query identity does not appear in gallery
             continue
-
+        
         cmc = orig_cmc.cumsum()
         cmc[cmc > 1] = 1
 
