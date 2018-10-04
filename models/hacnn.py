@@ -236,6 +236,8 @@ class HACNN(nn.Module):
 
         self.conv = ConvBlock(3, 32, 3, s=2, p=1)
 
+        self.local_loop = 2
+
         # Construct Inception + HarmAttn blocks
         # ============== Block 1 ==============
         self.inception1 = nn.Sequential(
@@ -271,7 +273,7 @@ class HACNN(nn.Module):
             self.local_conv2 = InceptionB(nchannels[0], nchannels[1])
             self.local_conv3 = InceptionB(nchannels[1], nchannels[2])
             self.fc_local = nn.Sequential(
-                nn.Linear(nchannels[2]*4, feat_dim),
+                nn.Linear(nchannels[2]*self.local_loop, feat_dim),
                 nn.BatchNorm1d(feat_dim),
                 nn.ReLU(),
             )
@@ -332,7 +334,7 @@ class HACNN(nn.Module):
         # local branch
         if self.learn_region:
             x1_local_list = []
-            for region_idx in range(2):
+            for region_idx in range(self.local_loop):
                 x1_theta_i = x1_theta[:,region_idx,:]
                 #print('x1_theta_i', x1_theta_i.size())
                 x1_theta_i = self.transform_theta(x1_theta_i, region_idx)
@@ -357,7 +359,7 @@ class HACNN(nn.Module):
         # local branch
         if self.learn_region:
             x2_local_list = []
-            for region_idx in range(2):
+            for region_idx in range(self.local_loop):
                 x2_theta_i = x2_theta[:,region_idx,:]
                 #print('x2_theta_i', x2_theta_i.size())
                 x2_theta_i = self.transform_theta(x2_theta_i, region_idx)
@@ -384,7 +386,7 @@ class HACNN(nn.Module):
         # local branch
         if self.learn_region:
             x3_local_list = []
-            for region_idx in range(2):
+            for region_idx in range(self.local_loop):
                 x3_theta_i = x3_theta[:,region_idx,:]
                 #print('x3_theta_i', x3_theta_i.size())
                 x3_theta_i = self.transform_theta(x3_theta_i, region_idx)
@@ -410,7 +412,7 @@ class HACNN(nn.Module):
         # local branch
         if self.learn_region:
             x_local_list = []
-            for region_idx in range(2):
+            for region_idx in range(self.local_loop):
                 x_local_i = x3_local_list[region_idx]
                 #print('x_local_i', x_local_i.size())
                 x_local_i = F.avg_pool2d(x_local_i, x_local_i.size()[2:])
