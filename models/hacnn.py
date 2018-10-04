@@ -283,10 +283,10 @@ class HACNN(nn.Module):
     def init_scale_factors(self):
         # initialize scale factors (s_w, s_h) for four regions
         self.scale_factors = []
-        self.scale_factors.append(torch.tensor([[1, 0], [0, 0.25]], dtype=torch.float))
-        self.scale_factors.append(torch.tensor([[1, 0], [0, 0.25]], dtype=torch.float))
-        self.scale_factors.append(torch.tensor([[1, 0], [0, 0.25]], dtype=torch.float))
-        self.scale_factors.append(torch.tensor([[1, 0], [0, 0.25]], dtype=torch.float))
+        self.scale_factors.append(torch.tensor([[1, 0], [0, 0.5]], dtype=torch.float))
+        self.scale_factors.append(torch.tensor([[1, 0], [0, 0.5]], dtype=torch.float))
+        # self.scale_factors.append(torch.tensor([[1, 0], [0, 0.25]], dtype=torch.float))
+        # self.scale_factors.append(torch.tensor([[1, 0], [0, 0.25]], dtype=torch.float))
 
     def stn(self, x, theta):
         """Perform spatial transform
@@ -332,7 +332,7 @@ class HACNN(nn.Module):
         # local branch
         if self.learn_region:
             x1_local_list = []
-            for region_idx in range(4):
+            for region_idx in range(2):
                 x1_theta_i = x1_theta[:,region_idx,:]
                 #print('x1_theta_i', x1_theta_i.size())
                 x1_theta_i = self.transform_theta(x1_theta_i, region_idx)
@@ -357,7 +357,7 @@ class HACNN(nn.Module):
         # local branch
         if self.learn_region:
             x2_local_list = []
-            for region_idx in range(4):
+            for region_idx in range(2):
                 x2_theta_i = x2_theta[:,region_idx,:]
                 #print('x2_theta_i', x2_theta_i.size())
                 x2_theta_i = self.transform_theta(x2_theta_i, region_idx)
@@ -384,7 +384,7 @@ class HACNN(nn.Module):
         # local branch
         if self.learn_region:
             x3_local_list = []
-            for region_idx in range(4):
+            for region_idx in range(2):
                 x3_theta_i = x3_theta[:,region_idx,:]
                 #print('x3_theta_i', x3_theta_i.size())
                 x3_theta_i = self.transform_theta(x3_theta_i, region_idx)
@@ -410,7 +410,7 @@ class HACNN(nn.Module):
         # local branch
         if self.learn_region:
             x_local_list = []
-            for region_idx in range(4):
+            for region_idx in range(2):
                 x_local_i = x3_local_list[region_idx]
                 #print('x_local_i', x_local_i.size())
                 x_local_i = F.avg_pool2d(x_local_i, x_local_i.size()[2:])
