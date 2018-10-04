@@ -319,7 +319,7 @@ class HACNN(nn.Module):
 
     def forward(self, x):
 
-        assert x.size(2) == 160 and x.size(3) == 64, \
+        assert x.size(2) == 160 and x.size(3) == 160, \
             "Input size does not match, expected (280, 200) but got ({}, {})".format(x.size(2), x.size(3))
         x = self.conv(x)
 
@@ -341,7 +341,7 @@ class HACNN(nn.Module):
                 #print('x1_theta_i', x1_theta_i.size())
                 x1_trans_i = self.stn(x, x1_theta_i)
                 #print('x1_trans_i', x1_trans_i.size())
-                x1_trans_i = F.upsample(x1_trans_i, (24, 28), mode='bilinear', align_corners=True)
+                x1_trans_i = F.upsample(x1_trans_i, (24, 68), mode='bilinear', align_corners=True)
                 #print('x1_trans_i', x1_trans_i.size())
                 x1_local_i = self.local_conv1(x1_trans_i)
                 #print('x1_local_i', x1_local_i.size())
@@ -366,7 +366,7 @@ class HACNN(nn.Module):
                 #print('x2_theta_i', x2_theta_i.size())
                 x2_trans_i = self.stn(x1_out, x2_theta_i)
                 #print('x2_trans_i', x2_trans_i.size())
-                x2_trans_i = F.upsample(x2_trans_i, (12, 14), mode='bilinear', align_corners=True)
+                x2_trans_i = F.upsample(x2_trans_i, (12, 34), mode='bilinear', align_corners=True)
                 #print('x2_trans_i', x2_trans_i.size())
                 x2_local_i = x2_trans_i + x1_local_list[region_idx]
                 #print('x2_local_i', x2_local_i.size())
@@ -393,7 +393,7 @@ class HACNN(nn.Module):
                 #print('x3_theta_i', x3_theta_i.size())
                 x3_trans_i = self.stn(x2_out, x3_theta_i)
                 #print('x3_trans_i', x3_trans_i.size())
-                x3_trans_i = F.upsample(x3_trans_i, (6, 7), mode='bilinear', align_corners=True)
+                x3_trans_i = F.upsample(x3_trans_i, (6, 17), mode='bilinear', align_corners=True)
                 #print('x3_trans_i', x3_trans_i.size())
                 x3_local_i = x3_trans_i + x2_local_list[region_idx]
                 #print('x3_local_i', x3_local_i.size())

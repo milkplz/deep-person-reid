@@ -63,11 +63,11 @@ python train_imgreid_xent.py \
 
 python train_imgreid_xent.py \
   -d videotag \
-  --root /Users/luke/Downloads/step_5-2 \
+  --root /Users/luke/Downloads/step_5-3 \
   -a hacnn \
-  --save-dir log/videotag_dataset_7 \
+  --save-dir log/videotag_dataset_4 \
   --test-batch 32 \
-  --height 160 --width 64
+  --height 160 --width 160
 
 
 
