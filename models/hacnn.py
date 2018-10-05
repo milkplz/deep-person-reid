@@ -228,7 +228,7 @@ class HACNN(nn.Module):
     - feat_dim (int): feature dimension for a single stream
     - learn_region (bool): whether to learn region features (i.e. local branch)
     """
-    def __init__(self, num_classes, loss={'xent'}, nchannels=[128, 256, 384], feat_dim=1024, learn_region=True, use_gpu=True, **kwargs):
+    def __init__(self, num_classes, loss={'xent'}, nchannels=[128, 256, 384], feat_dim=512, learn_region=True, use_gpu=True, **kwargs):
         super(HACNN, self).__init__()
         self.loss = loss
         self.learn_region = learn_region
@@ -236,7 +236,7 @@ class HACNN(nn.Module):
 
         self.conv = ConvBlock(3, 32, 3, s=2, p=1)
 
-        self.local_loop = 2
+        self.local_loop = 4
 
         # Construct Inception + HarmAttn blocks
         # ============== Block 1 ==============
@@ -285,10 +285,10 @@ class HACNN(nn.Module):
     def init_scale_factors(self):
         # initialize scale factors (s_w, s_h) for four regions
         self.scale_factors = []
-        self.scale_factors.append(torch.tensor([[1, 0], [0, 0.5]], dtype=torch.float))
-        self.scale_factors.append(torch.tensor([[1, 0], [0, 0.5]], dtype=torch.float))
-        # self.scale_factors.append(torch.tensor([[1, 0], [0, 0.25]], dtype=torch.float))
-        # self.scale_factors.append(torch.tensor([[1, 0], [0, 0.25]], dtype=torch.float))
+        self.scale_factors.append(torch.tensor([[1, 0], [0, 0.25]], dtype=torch.float))
+        self.scale_factors.append(torch.tensor([[1, 0], [0, 0.25]], dtype=torch.float))
+        self.scale_factors.append(torch.tensor([[1, 0], [0, 0.25]], dtype=torch.float))
+        self.scale_factors.append(torch.tensor([[1, 0], [0, 0.25]], dtype=torch.float))
 
     def stn(self, x, theta):
         """Perform spatial transform
@@ -319,8 +319,8 @@ class HACNN(nn.Module):
 
     def forward(self, x):
 
-        assert x.size(2) == 160 and x.size(3) == 160, \
-            "Input size does not match, expected (280, 200) but got ({}, {})".format(x.size(2), x.size(3))
+        assert x.size(2) == 160 and x.size(3) == 64, \
+            "Input size does not match, expected (160, 64) but got ({}, {})".format(x.size(2), x.size(3))
         x = self.conv(x)
 
         # ============== Block 1 ==============
@@ -341,7 +341,7 @@ class HACNN(nn.Module):
                 #print('x1_theta_i', x1_theta_i.size())
                 x1_trans_i = self.stn(x, x1_theta_i)
                 #print('x1_trans_i', x1_trans_i.size())
-                x1_trans_i = F.upsample(x1_trans_i, (24, 68), mode='bilinear', align_corners=True)
+                x1_trans_i = F.upsample(x1_trans_i, (24, 28), mode='bilinear', align_corners=True)
                 #print('x1_trans_i', x1_trans_i.size())
                 x1_local_i = self.local_conv1(x1_trans_i)
                 #print('x1_local_i', x1_local_i.size())
@@ -366,7 +366,7 @@ class HACNN(nn.Module):
                 #print('x2_theta_i', x2_theta_i.size())
                 x2_trans_i = self.stn(x1_out, x2_theta_i)
                 #print('x2_trans_i', x2_trans_i.size())
-                x2_trans_i = F.upsample(x2_trans_i, (12, 34), mode='bilinear', align_corners=True)
+                x2_trans_i = F.upsample(x2_trans_i, (12, 14), mode='bilinear', align_corners=True)
                 #print('x2_trans_i', x2_trans_i.size())
                 x2_local_i = x2_trans_i + x1_local_list[region_idx]
                 #print('x2_local_i', x2_local_i.size())
@@ -393,7 +393,7 @@ class HACNN(nn.Module):
                 #print('x3_theta_i', x3_theta_i.size())
                 x3_trans_i = self.stn(x2_out, x3_theta_i)
                 #print('x3_trans_i', x3_trans_i.size())
-                x3_trans_i = F.upsample(x3_trans_i, (6, 17), mode='bilinear', align_corners=True)
+                x3_trans_i = F.upsample(x3_trans_i, (6, 7), mode='bilinear', align_corners=True)
                 #print('x3_trans_i', x3_trans_i.size())
                 x3_local_i = x3_trans_i + x2_local_list[region_idx]
                 #print('x3_local_i', x3_local_i.size())
