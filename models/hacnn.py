@@ -228,7 +228,7 @@ class HACNN(nn.Module):
     - feat_dim (int): feature dimension for a single stream
     - learn_region (bool): whether to learn region features (i.e. local branch)
     """
-    def __init__(self, num_classes, loss={'xent'}, nchannels=[128, 256, 384], feat_dim=512, learn_region=True, use_gpu=True, **kwargs):
+    def __init__(self, num_classes, loss={'xent'}, nchannels=[128, 256, 384], feat_dim=1024, learn_region=True, use_gpu=True, **kwargs):
         super(HACNN, self).__init__()
         self.loss = loss
         self.learn_region = learn_region
